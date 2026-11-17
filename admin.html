@@ -1,17 +1,18 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0e1523">
 <title>TV APP STORE - Admin</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
+:root{color-scheme:dark}
 body{margin:0;background:#0e1523;color:#f1f5f9;font-family:Arial,sans-serif}
 header{padding:22px 5%;background:#172337;border-bottom:1px solid #29374b}
 h1{font-size:22px;margin:0}
-main{max-width:1050px;margin:30px auto;padding:0 18px}
+main{max-width:1100px;margin:30px auto;padding:0 18px}
 .card{background:#1b293e;border:1px solid #34445d;border-radius:13px;padding:22px;margin-bottom:18px}
 input,select{width:100%;padding:13px;background:#101b2c;color:white;border:1px solid #42516a;border-radius:8px;margin:8px 0 15px}
 button{background:#2865ed;color:white;border:0;padding:12px 17px;border-radius:8px;cursor:pointer;font-weight:bold}
@@ -20,298 +21,504 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .danger{background:#dc3545}
 label{font-size:13px;color:#b9c8db}
 .muted{color:#9eafc5;font-size:13px}
-.row{display:flex;gap:12px;flex-wrap:wrap}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .row>*{flex:1;min-width:180px}
 .hidden{display:none!important}
-table{width:100%;border-collapse:collapse;min-width:600px}
-th,td{text-align:left;padding:12px;border-bottom:1px solid #34445d;font-size:13px}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #34445d;font-size:13px;vertical-align:middle}
 .tablewrap{overflow:auto}
 .status{color:#6ee7a0}
-#message{padding:12px;border-radius:8px;margin:12px 0;background:#253650}
+#message{padding:12px;border-radius:8px;margin:12px 0;background:#253650;overflow-wrap:anywhere}
+#message.error{background:#542a35;border:1px solid #8b3c4d}
+#message.success{background:#173d35;border:1px solid #28745f}
+.actions{display:flex;gap:8px;align-items:center}
+.small{font-size:12px;color:#9eafc5}
+.code-value{letter-spacing:2px;overflow-wrap:anywhere}
+@media(max-width:600px){
+  header{padding:18px}
+  main{margin:18px auto;padding:0 12px}
+  .card{padding:16px}
+  .row>*{min-width:100%}
+}
 </style>
 </head>
 <body>
 
 <header>
-<h1>▶ TV APP STORE</h1>
-<div class="muted">Administrator Control Panel</div>
+  <h1>▶ TV APP STORE</h1>
+  <div class="muted">Administrator Control Panel</div>
 </header>
 
 <main>
+  <div id="message" class="hidden" role="status" aria-live="polite"></div>
 
-<div id="message" class="hidden"></div>
+  <!-- LOGIN -->
+  <section id="login" class="card">
+    <h2>Administrator Login</h2>
+    <p class="muted">Masuk menggunakan akun administrator.</p>
 
-<!-- LOGIN -->
-<section id="login" class="card">
-<h2>Administrator Login</h2>
-<p class="muted">Masuk menggunakan akun administrator.</p>
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" placeholder="Email admin" required>
 
-<label>Email</label>
-<input id="email" type="email" placeholder="Email admin">
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" placeholder="Password" required>
 
-<label>Password</label>
-<input id="password" type="password" placeholder="Password">
+      <button id="loginBtn" type="submit">LOGIN ADMIN</button>
+    </form>
+  </section>
 
-<button id="loginBtn" onclick="login()">LOGIN ADMIN</button>
-</section>
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="hidden">
+    <div class="card">
+      <div class="row">
+        <div>
+          <h2>Dashboard Admin</h2>
+          <div id="adminEmail" class="muted"></div>
+        </div>
+        <div style="text-align:right">
+          <button id="logoutBtn" class="secondary" type="button">LOGOUT</button>
+        </div>
+      </div>
+    </div>
 
-<!-- DASHBOARD -->
-<section id="dashboard" class="hidden">
+    <div class="card">
+      <h2>🎟 Buat Kode Aktivasi</h2>
 
-<div class="card">
-<div class="row">
-<div>
-<h2>Dashboard Admin</h2>
-<div id="adminEmail" class="muted"></div>
-</div>
-<div style="text-align:right">
-<button class="secondary" onclick="logout()">LOGOUT</button>
-</div>
-</div>
-</div>
+      <label for="duration">Masa berlaku</label>
+      <select id="duration">
+        <option value="7">7 Hari</option>
+        <option value="30" selected>30 Hari</option>
+        <option value="90">90 Hari</option>
+        <option value="365">365 Hari</option>
+      </select>
 
-<div class="card">
-<h2>🎟 Buat Kode Aktivasi</h2>
+      <label for="maxUses">Maksimal penggunaan</label>
+      <input id="maxUses" type="number" value="1" min="1" max="10000" step="1">
 
-<label>Masa berlaku</label>
-<select id="duration">
-<option value="7">7 Hari</option>
-<option value="30" selected>30 Hari</option>
-<option value="90">90 Hari</option>
-<option value="365">365 Hari</option>
-</select>
+      <button id="createCodeBtn" type="button">BUAT KODE</button>
 
-<label>Maksimal penggunaan</label>
-<input id="maxUses" type="number" value="1" min="1" max="10000">
+      <div id="newCode" class="hidden" style="margin-top:20px">
+        <p class="muted">Kode aktivasi berhasil dibuat:</p>
+        <h2 id="codeValue" class="code-value"></h2>
+        <button id="copyCodeBtn" class="secondary" type="button">SALIN KODE</button>
+      </div>
+    </div>
 
-<button onclick="createCode()">BUAT KODE</button>
+    <div class="card">
+      <div class="row">
+        <div>
+          <h2>Daftar Kode Aktivasi</h2>
+          <p class="muted">Kelola kode pelanggan.</p>
+        </div>
+        <div style="text-align:right">
+          <button id="refreshCodesBtn" class="secondary" type="button">REFRESH</button>
+        </div>
+      </div>
 
-<div id="newCode" class="hidden" style="margin-top:20px">
-<p class="muted">Kode aktivasi berhasil dibuat:</p>
-<h2 id="codeValue" style="letter-spacing:2px"></h2>
-<button class="secondary" onclick="copyCode()">SALIN KODE</button>
-</div>
-</div>
-
-<div class="card">
-<div class="row">
-<div>
-<h2>Daftar Kode Aktivasi</h2>
-<p class="muted">Kelola kode pelanggan.</p>
-</div>
-<div style="text-align:right">
-<button class="secondary" onclick="loadCodes()">REFRESH</button>
-</div>
-</div>
-
-<div class="tablewrap">
-<table>
-<thead>
-<tr>
-<th>Kode</th>
-<th>Durasi</th>
-<th>Penggunaan</th>
-<th>Status</th>
-<th>Aksi</th>
-</tr>
-</thead>
-<tbody id="codes">
-<tr><td colspan="5">Belum dimuat</td></tr>
-</tbody>
-</table>
-</div>
-</div>
-
-</section>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Kode</th>
+              <th>Durasi</th>
+              <th>Penggunaan</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="codes">
+            <tr><td colspan="5">Belum dimuat</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 </main>
 
 <script>
-const SUPABASE_URL =
-"https://welkgmpeojswwczybaxz.supabase.co";
+"use strict";
 
-// Masukkan Publishable Key milik project kamu.
+/*
+ * TV APP STORE - ADMIN
+ * Supabase project URL dan Publishable Key.
+ * Publishable key boleh digunakan di browser.
+ * JANGAN memasukkan service_role / secret key ke file HTML.
+ */
+const SUPABASE_URL = "https://welkgmpeojswwczybaxz.supabase.co";
 const SUPABASE_KEY = "sb_publishable__uAx9Ak0SZ41-6UCC3LMxA_CZ6_kB0t";
 
-const sb = window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+if (!window.supabase || !window.supabase.createClient) {
+  document.getElementById("message").textContent =
+    "Library Supabase gagal dimuat. Periksa koneksi internet atau CDN.";
+  document.getElementById("message").classList.remove("hidden");
+  throw new Error("Supabase JS library is unavailable");
+}
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});
 
 let latestCode = "";
+let busy = false;
 
-function notify(text){
-const el=document.getElementById("message");
-el.textContent=text;
-el.classList.remove("hidden");
+const $ = (id) => document.getElementById(id);
+
+function notify(text, type = "info") {
+  const el = $("message");
+  el.textContent = String(text || "");
+  el.className = "";
+  el.id = "message";
+  if (type === "error") el.classList.add("error");
+  if (type === "success") el.classList.add("success");
 }
 
-async function api(action,extra={}){
-const {data,error}=await sb.functions.invoke(
-"tv-store-api",
-{body:{action,...extra}}
-);
-if(error) throw error;
-if(data?.error) throw new Error(data.error);
-return data;
+function clearNotify() {
+  $("message").textContent = "";
+  $("message").className = "hidden";
 }
 
-async function login(){
-const email=document.getElementById("email").value.trim();
-const password=document.getElementById("password").value;
-const btn=document.getElementById("loginBtn");
-
-if(!email||!password){
-notify("Masukkan email dan password.");
-return;
+function setBusy(button, state, busyText = "Memproses...") {
+  if (!button) return;
+  if (state) {
+    button.dataset.originalText = button.textContent;
+    button.textContent = busyText;
+    button.disabled = true;
+  } else {
+    button.textContent = button.dataset.originalText || button.textContent;
+    button.disabled = false;
+  }
 }
 
-btn.disabled=true;
-try{
-const {data,error}=await sb.auth.signInWithPassword({
-email,password
+/*
+ * Membaca body error dari Supabase FunctionsHttpError.
+ * Ini membantu menampilkan status HTTP dan pesan JSON dari Edge Function,
+ * bukan hanya "Edge Function returned a non-2xx status code".
+ */
+async function readFunctionError(error) {
+  let message = error?.message || "Permintaan ke Edge Function gagal";
+  let status = "";
+  const context = error?.context;
+
+  if (context instanceof Response) {
+    status = context.status;
+    try {
+      const body = await context.clone().json();
+      message =
+        body?.error ||
+        body?.message ||
+        body?.msg ||
+        message;
+    } catch {
+      try {
+        const text = await context.clone().text();
+        if (text) message = text;
+      } catch (_) {}
+    }
+  } else if (context && typeof context === "object") {
+    status = context.status || "";
+    if (context.error) message = context.error;
+    else if (context.message) message = context.message;
+  }
+
+  return (status ? "HTTP " + status + ": " : "") + message;
+}
+
+async function api(action, extra = {}) {
+  const { data, error } = await sb.functions.invoke("tv-store-api", {
+    body: {
+      action,
+      ...extra
+    }
+  });
+
+  if (error) {
+    throw new Error(await readFunctionError(error));
+  }
+
+  if (!data || data.success === false || data.error) {
+    throw new Error(data?.error || "Respons server tidak sesuai.");
+  }
+
+  return data;
+}
+
+function showLogin() {
+  $("dashboard").classList.add("hidden");
+  $("login").classList.remove("hidden");
+}
+
+function showDashboard(user) {
+  $("login").classList.add("hidden");
+  $("dashboard").classList.remove("hidden");
+  $("adminEmail").textContent = user?.email || "Administrator";
+}
+
+/* LOGIN */
+async function login(event) {
+  if (event) event.preventDefault();
+  clearNotify();
+
+  const email = $("email").value.trim();
+  const password = $("password").value;
+  const btn = $("loginBtn");
+
+  if (!email || !password) {
+    notify("Masukkan email dan password.", "error");
+    return;
+  }
+
+  setBusy(btn, true, "MEMERIKSA...");
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) throw error;
+    if (!data?.user) throw new Error("Pengguna tidak ditemukan.");
+
+    await verifyAdmin(data.user);
+  } catch (e) {
+    await sb.auth.signOut();
+    showLogin();
+    notify("Login gagal: " + (e?.message || String(e)), "error");
+  } finally {
+    setBusy(btn, false);
+  }
+}
+
+/* VERIFIKASI ADMIN DI SERVER */
+async function verifyAdmin(user) {
+  const result = await api("admin_check");
+
+  if (result.is_admin !== true) {
+    await sb.auth.signOut();
+    throw new Error("Akun ini bukan administrator.");
+  }
+
+  showDashboard(user);
+  notify("Login administrator berhasil.", "success");
+
+  // Jangan gagalkan login hanya karena daftar kode gagal dimuat.
+  try {
+    await loadCodes();
+  } catch (e) {
+    notify("Login berhasil, tetapi daftar kode gagal dimuat: " + e.message, "error");
+  }
+}
+
+/* BUAT KODE AKTIVASI */
+async function createCode() {
+  clearNotify();
+
+  const btn = $("createCodeBtn");
+  const duration = Number($("duration").value);
+  const maxUses = Number($("maxUses").value);
+
+  if (!Number.isInteger(duration) || duration < 1 || duration > 3650) {
+    notify("Durasi tidak valid.", "error");
+    return;
+  }
+
+  if (!Number.isInteger(maxUses) || maxUses < 1 || maxUses > 10000) {
+    notify("Maksimal penggunaan harus berupa angka 1 sampai 10000.", "error");
+    return;
+  }
+
+  setBusy(btn, true, "MEMBUAT KODE...");
+  try {
+    const result = await api("admin_create_code", {
+      duration_days: duration,
+      max_uses: maxUses
+    });
+
+    if (!result.code) {
+      throw new Error("Server tidak mengembalikan kode aktivasi.");
+    }
+
+    latestCode = result.code;
+    $("codeValue").textContent = latestCode;
+    $("newCode").classList.remove("hidden");
+
+    notify("Kode aktivasi berhasil dibuat.", "success");
+    await loadCodes();
+  } catch (e) {
+    notify("Gagal membuat kode: " + (e?.message || String(e)), "error");
+    console.error("admin_create_code error:", e);
+  } finally {
+    setBusy(btn, false);
+  }
+}
+
+/* SALIN KODE */
+async function copyCode() {
+  if (!latestCode) {
+    notify("Belum ada kode untuk disalin.", "error");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(latestCode);
+    notify("Kode berhasil disalin.", "success");
+  } catch (e) {
+    // Fallback untuk browser yang tidak mengizinkan Clipboard API.
+    const area = document.createElement("textarea");
+    area.value = latestCode;
+    document.body.appendChild(area);
+    area.select();
+    const copied = document.execCommand("copy");
+    area.remove();
+
+    if (copied) notify("Kode berhasil disalin.", "success");
+    else notify("Tidak dapat menyalin otomatis. Silakan salin kode secara manual.", "error");
+  }
+}
+
+/* MUAT DAFTAR KODE */
+async function loadCodes() {
+  const tbody = $("codes");
+  const btn = $("refreshCodesBtn");
+
+  tbody.innerHTML = "<tr><td colspan='5'>Memuat...</td></tr>";
+
+  if (btn) setBusy(btn, true, "MEMUAT...");
+  try {
+    const result = await api("admin_list_codes");
+    const items = Array.isArray(result.codes) ? result.codes : [];
+
+    tbody.innerHTML = "";
+
+    if (items.length === 0) {
+      tbody.innerHTML = "<tr><td colspan='5'>Belum ada kode aktivasi.</td></tr>";
+      return;
+    }
+
+    for (const item of items) {
+      const tr = document.createElement("tr");
+
+      const values = [
+        item.code ?? "-",
+        String(item.duration_days ?? 0) + " hari",
+        String(item.used_count ?? 0) + " / " + String(item.max_uses ?? 0),
+        item.enabled ? "AKTIF" : "NONAKTIF"
+      ];
+
+      for (const value of values) {
+        const td = document.createElement("td");
+        td.textContent = value;
+        if (value === "AKTIF") td.className = "status";
+        tr.appendChild(td);
+      }
+
+      const action = document.createElement("td");
+
+      if (item.enabled) {
+        const button = document.createElement("button");
+        button.className = "danger";
+        button.type = "button";
+        button.textContent = "NONAKTIFKAN";
+        button.addEventListener("click", () => disableCode(item.id, button));
+        action.appendChild(button);
+      } else {
+        action.textContent = "-";
+      }
+
+      tr.appendChild(action);
+      tbody.appendChild(tr);
+    }
+  } catch (e) {
+    tbody.innerHTML = "<tr><td colspan='5'>Gagal memuat kode.</td></tr>";
+    notify("Gagal memuat daftar kode: " + (e?.message || String(e)), "error");
+    console.error("admin_list_codes error:", e);
+    throw e;
+  } finally {
+    if (btn) setBusy(btn, false);
+  }
+}
+
+/* NONAKTIFKAN KODE */
+async function disableCode(id, button) {
+  if (!id) {
+    notify("ID kode tidak ditemukan.", "error");
+    return;
+  }
+
+  if (!confirm("Nonaktifkan kode ini? Pelanggan tidak dapat menggunakan kode ini lagi.")) {
+    return;
+  }
+
+  if (button) setBusy(button, true, "...");
+  try {
+    await api("admin_disable_code", { id });
+    notify("Kode berhasil dinonaktifkan.", "success");
+    await loadCodes();
+  } catch (e) {
+    notify("Gagal menonaktifkan kode: " + (e?.message || String(e)), "error");
+    console.error("admin_disable_code error:", e);
+  } finally {
+    if (button) setBusy(button, false);
+  }
+}
+
+/* LOGOUT */
+async function logout() {
+  const btn = $("logoutBtn");
+  setBusy(btn, true, "KELUAR...");
+  try {
+    const { error } = await sb.auth.signOut();
+    if (error) throw error;
+
+    latestCode = "";
+    $("password").value = "";
+    $("newCode").classList.add("hidden");
+    showLogin();
+    notify("Kamu telah logout.", "success");
+  } catch (e) {
+    notify("Logout gagal: " + (e?.message || String(e)), "error");
+  } finally {
+    setBusy(btn, false);
+  }
+}
+
+/* PEMERIKSAAN SESI SAAT HALAMAN DIBUKA */
+async function init() {
+  try {
+    const { data, error } = await sb.auth.getSession();
+    if (error) throw error;
+
+    if (data?.session?.user) {
+      try {
+        await verifyAdmin(data.session.user);
+      } catch (e) {
+        await sb.auth.signOut();
+        showLogin();
+        notify("Sesi tidak memiliki akses administrator: " + e.message, "error");
+      }
+    } else {
+      showLogin();
+    }
+  } catch (e) {
+    showLogin();
+    notify("Gagal memeriksa sesi: " + (e?.message || String(e)), "error");
+  }
+}
+
+/* EVENT HANDLERS */
+$("loginForm").addEventListener("submit", login);
+$("createCodeBtn").addEventListener("click", createCode);
+$("copyCodeBtn").addEventListener("click", copyCode);
+$("refreshCodesBtn").addEventListener("click", async () => {
+  try {
+    await loadCodes();
+    notify("Daftar kode diperbarui.", "success");
+  } catch (_) {}
 });
-if(error) throw error;
-
-await verifyAdmin(data.user);
-}catch(e){
-await sb.auth.signOut();
-notify("Login gagal: "+e.message);
-}finally{
-btn.disabled=false;
-}
-}
-
-async function verifyAdmin(user){
-const result=await api("admin_check");
-
-if(!result.is_admin){
-await sb.auth.signOut();
-throw new Error("Akun ini bukan administrator.");
-}
-
-document.getElementById("login").classList.add("hidden");
-document.getElementById("dashboard").classList.remove("hidden");
-document.getElementById("adminEmail").textContent=user.email;
-
-notify("Login administrator berhasil.");
-await loadCodes();
-}
-
-async function createCode(){
-try{
-const duration=Number(document.getElementById("duration").value);
-const maxUses=Number(document.getElementById("maxUses").value);
-
-if(!Number.isInteger(maxUses)||maxUses<1||maxUses>10000){
-throw new Error("Jumlah penggunaan tidak valid.");
-}
-
-const result=await api("admin_create_code",{
-duration_days:duration,
-max_uses:maxUses
-});
-
-latestCode=result.code;
-document.getElementById("codeValue").textContent=latestCode;
-document.getElementById("newCode").classList.remove("hidden");
-
-notify("Kode aktivasi berhasil dibuat.");
-await loadCodes();
-
-}catch(e){
-notify("Gagal membuat kode: "+e.message);
-}
-}
-
-async function copyCode(){
-if(!latestCode)return;
-await navigator.clipboard.writeText(latestCode);
-notify("Kode berhasil disalin.");
-}
-
-async function loadCodes(){
-const tbody=document.getElementById("codes");
-tbody.innerHTML="<tr><td colspan='5'>Memuat...</td></tr>";
-
-try{
-const result=await api("admin_list_codes");
-tbody.innerHTML="";
-
-if(!result.codes?.length){
-tbody.innerHTML="<tr><td colspan='5'>Belum ada kode.</td></tr>";
-return;
-}
-
-for(const item of result.codes){
-const tr=document.createElement("tr");
-
-const values=[
-item.code,
-item.duration_days+" hari",
-item.used_count+" / "+item.max_uses,
-item.enabled?"AKTIF":"NONAKTIF"
-];
-
-values.forEach((value)=>{
-const td=document.createElement("td");
-td.textContent=value;
-tr.appendChild(td);
-});
-
-const action=document.createElement("td");
-
-if(item.enabled){
-const button=document.createElement("button");
-button.className="danger";
-button.textContent="NONAKTIFKAN";
-button.onclick=()=>disableCode(item.id);
-action.appendChild(button);
-}else{
-action.textContent="-";
-}
-
-tr.appendChild(action);
-tbody.appendChild(tr);
-}
-}catch(e){
-tbody.innerHTML="<tr><td colspan='5'>Gagal memuat kode.</td></tr>";
-notify("Kesalahan: "+e.message);
-}
-}
-
-async function disableCode(id){
-if(!confirm("Nonaktifkan kode ini?"))return;
-
-try{
-await api("admin_disable_code",{id});
-notify("Kode berhasil dinonaktifkan.");
-await loadCodes();
-}catch(e){
-notify("Gagal: "+e.message);
-}
-}
-
-async function logout(){
-await sb.auth.signOut();
-document.getElementById("dashboard").classList.add("hidden");
-document.getElementById("login").classList.remove("hidden");
-document.getElementById("password").value="";
-notify("Kamu telah logout.");
-}
-
-async function init(){
-const {data}=await sb.auth.getSession();
-if(data.session){
-try{
-await verifyAdmin(data.session.user);
-}catch(e){
-await sb.auth.signOut();
-document.getElementById("dashboard").classList.add("hidden");
-document.getElementById("login").classList.remove("hidden");
-notify(e.message);
-}
-}
-}
+$("logoutBtn").addEventListener("click", logout);
 
 init();
 </script>
