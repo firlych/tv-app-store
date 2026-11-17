@@ -1,0 +1,319 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TV APP STORE - Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0e1523;color:#f1f5f9;font-family:Arial,sans-serif}
+header{padding:22px 5%;background:#172337;border-bottom:1px solid #29374b}
+h1{font-size:22px;margin:0}
+main{max-width:1050px;margin:30px auto;padding:0 18px}
+.card{background:#1b293e;border:1px solid #34445d;border-radius:13px;padding:22px;margin-bottom:18px}
+input,select{width:100%;padding:13px;background:#101b2c;color:white;border:1px solid #42516a;border-radius:8px;margin:8px 0 15px}
+button{background:#2865ed;color:white;border:0;padding:12px 17px;border-radius:8px;cursor:pointer;font-weight:bold}
+button:disabled{opacity:.5;cursor:not-allowed}
+.secondary{background:#475569}
+.danger{background:#dc3545}
+label{font-size:13px;color:#b9c8db}
+.muted{color:#9eafc5;font-size:13px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.row>*{flex:1;min-width:180px}
+.hidden{display:none!important}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #34445d;font-size:13px}
+.tablewrap{overflow:auto}
+.status{color:#6ee7a0}
+#message{padding:12px;border-radius:8px;margin:12px 0;background:#253650}
+</style>
+</head>
+<body>
+
+<header>
+<h1>▶ TV APP STORE</h1>
+<div class="muted">Administrator Control Panel</div>
+</header>
+
+<main>
+
+<div id="message" class="hidden"></div>
+
+<!-- LOGIN -->
+<section id="login" class="card">
+<h2>Administrator Login</h2>
+<p class="muted">Masuk menggunakan akun administrator.</p>
+
+<label>Email</label>
+<input id="email" type="email" placeholder="Email admin">
+
+<label>Password</label>
+<input id="password" type="password" placeholder="Password">
+
+<button id="loginBtn" onclick="login()">LOGIN ADMIN</button>
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="hidden">
+
+<div class="card">
+<div class="row">
+<div>
+<h2>Dashboard Admin</h2>
+<div id="adminEmail" class="muted"></div>
+</div>
+<div style="text-align:right">
+<button class="secondary" onclick="logout()">LOGOUT</button>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h2>🎟 Buat Kode Aktivasi</h2>
+
+<label>Masa berlaku</label>
+<select id="duration">
+<option value="7">7 Hari</option>
+<option value="30" selected>30 Hari</option>
+<option value="90">90 Hari</option>
+<option value="365">365 Hari</option>
+</select>
+
+<label>Maksimal penggunaan</label>
+<input id="maxUses" type="number" value="1" min="1" max="10000">
+
+<button onclick="createCode()">BUAT KODE</button>
+
+<div id="newCode" class="hidden" style="margin-top:20px">
+<p class="muted">Kode aktivasi berhasil dibuat:</p>
+<h2 id="codeValue" style="letter-spacing:2px"></h2>
+<button class="secondary" onclick="copyCode()">SALIN KODE</button>
+</div>
+</div>
+
+<div class="card">
+<div class="row">
+<div>
+<h2>Daftar Kode Aktivasi</h2>
+<p class="muted">Kelola kode pelanggan.</p>
+</div>
+<div style="text-align:right">
+<button class="secondary" onclick="loadCodes()">REFRESH</button>
+</div>
+</div>
+
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+<th>Kode</th>
+<th>Durasi</th>
+<th>Penggunaan</th>
+<th>Status</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="codes">
+<tr><td colspan="5">Belum dimuat</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</section>
+</main>
+
+<script>
+const SUPABASE_URL =
+"https://welkgmpeojswwczybazx.supabase.co";
+
+// Masukkan Publishable Key milik project kamu.
+const SUPABASE_KEY = "sb_publishable__uAx9Ak0SZ41-6UCC3LMxA_CZ6_kB0t";
+
+const sb = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+let latestCode = "";
+
+function notify(text){
+const el=document.getElementById("message");
+el.textContent=text;
+el.classList.remove("hidden");
+}
+
+async function api(action,extra={}){
+const {data,error}=await sb.functions.invoke(
+"tv-store-api",
+{body:{action,...extra}}
+);
+if(error) throw error;
+if(data?.error) throw new Error(data.error);
+return data;
+}
+
+async function login(){
+const email=document.getElementById("email").value.trim();
+const password=document.getElementById("password").value;
+const btn=document.getElementById("loginBtn");
+
+if(!email||!password){
+notify("Masukkan email dan password.");
+return;
+}
+
+btn.disabled=true;
+try{
+const {data,error}=await sb.auth.signInWithPassword({
+email,password
+});
+if(error) throw error;
+
+await verifyAdmin(data.user);
+}catch(e){
+await sb.auth.signOut();
+notify("Login gagal: "+e.message);
+}finally{
+btn.disabled=false;
+}
+}
+
+async function verifyAdmin(user){
+const result=await api("admin_check");
+
+if(!result.is_admin){
+await sb.auth.signOut();
+throw new Error("Akun ini bukan administrator.");
+}
+
+document.getElementById("login").classList.add("hidden");
+document.getElementById("dashboard").classList.remove("hidden");
+document.getElementById("adminEmail").textContent=user.email;
+
+notify("Login administrator berhasil.");
+await loadCodes();
+}
+
+async function createCode(){
+try{
+const duration=Number(document.getElementById("duration").value);
+const maxUses=Number(document.getElementById("maxUses").value);
+
+if(!Number.isInteger(maxUses)||maxUses<1||maxUses>10000){
+throw new Error("Jumlah penggunaan tidak valid.");
+}
+
+const result=await api("admin_create_code",{
+duration_days:duration,
+max_uses:maxUses
+});
+
+latestCode=result.code;
+document.getElementById("codeValue").textContent=latestCode;
+document.getElementById("newCode").classList.remove("hidden");
+
+notify("Kode aktivasi berhasil dibuat.");
+await loadCodes();
+
+}catch(e){
+notify("Gagal membuat kode: "+e.message);
+}
+}
+
+async function copyCode(){
+if(!latestCode)return;
+await navigator.clipboard.writeText(latestCode);
+notify("Kode berhasil disalin.");
+}
+
+async function loadCodes(){
+const tbody=document.getElementById("codes");
+tbody.innerHTML="<tr><td colspan='5'>Memuat...</td></tr>";
+
+try{
+const result=await api("admin_list_codes");
+tbody.innerHTML="";
+
+if(!result.codes?.length){
+tbody.innerHTML="<tr><td colspan='5'>Belum ada kode.</td></tr>";
+return;
+}
+
+for(const item of result.codes){
+const tr=document.createElement("tr");
+
+const values=[
+item.code,
+item.duration_days+" hari",
+item.used_count+" / "+item.max_uses,
+item.enabled?"AKTIF":"NONAKTIF"
+];
+
+values.forEach((value)=>{
+const td=document.createElement("td");
+td.textContent=value;
+tr.appendChild(td);
+});
+
+const action=document.createElement("td");
+
+if(item.enabled){
+const button=document.createElement("button");
+button.className="danger";
+button.textContent="NONAKTIFKAN";
+button.onclick=()=>disableCode(item.id);
+action.appendChild(button);
+}else{
+action.textContent="-";
+}
+
+tr.appendChild(action);
+tbody.appendChild(tr);
+}
+}catch(e){
+tbody.innerHTML="<tr><td colspan='5'>Gagal memuat kode.</td></tr>";
+notify("Kesalahan: "+e.message);
+}
+}
+
+async function disableCode(id){
+if(!confirm("Nonaktifkan kode ini?"))return;
+
+try{
+await api("admin_disable_code",{id});
+notify("Kode berhasil dinonaktifkan.");
+await loadCodes();
+}catch(e){
+notify("Gagal: "+e.message);
+}
+}
+
+async function logout(){
+await sb.auth.signOut();
+document.getElementById("dashboard").classList.add("hidden");
+document.getElementById("login").classList.remove("hidden");
+document.getElementById("password").value="";
+notify("Kamu telah logout.");
+}
+
+async function init(){
+const {data}=await sb.auth.getSession();
+if(data.session){
+try{
+await verifyAdmin(data.session.user);
+}catch(e){
+await sb.auth.signOut();
+document.getElementById("dashboard").classList.add("hidden");
+document.getElementById("login").classList.remove("hidden");
+notify(e.message);
+}
+}
+}
+
+init();
+</script>
+</body>
+</html>
