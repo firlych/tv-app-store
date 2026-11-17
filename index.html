@@ -5,109 +5,885 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TV APP STORE</title>
+
 <style>
 *{box-sizing:border-box}
+
 body{
- margin:0;background:#101827;color:#fff;
- font-family:Arial,sans-serif;padding:24px
+ margin:0;
+ background:#101827;
+ color:#fff;
+ font-family:Arial,sans-serif;
+ padding:24px;
 }
-header{display:flex;align-items:center;gap:12px}
+
+header{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+ flex-wrap:wrap;
+}
+
+.brand{
+ display:flex;
+ align-items:center;
+ gap:12px;
+}
+
 .logo{
- background:#2563eb;padding:13px;border-radius:13px;
- font-size:23px
+ background:#2563eb;
+ padding:13px;
+ border-radius:13px;
+ font-size:23px;
 }
-h1{font-size:23px}
+
+h1{font-size:23px;margin:0 0 6px}
 .sub{color:#94a3b8;font-size:13px}
-.search{
- width:100%;padding:15px;margin:24px 0;
- border:1px solid #334155;border-radius:12px;
- background:#1e293b;color:white;font-size:15px
-}
-.grid{display:grid;grid-template-columns:
- repeat(auto-fit,minmax(260px,1fr));gap:16px}
-.card{
- background:#1e293b;border:1px solid #334155;
- border-radius:16px;padding:18px
-}
-.icon{
- width:55px;height:55px;border-radius:13px;
- background:#334155;display:grid;place-items:center;
- font-size:27px;margin-bottom:14px
-}
-.name{font-size:19px;font-weight:bold}
-.desc{color:#94a3b8;font-size:13px;min-height:35px}
+
 button{
- border:0;background:#2563eb;color:white;
- padding:12px 20px;border-radius:9px;
- font-weight:bold;cursor:pointer
+ border:0;
+ background:#2563eb;
+ color:white;
+ padding:12px 20px;
+ border-radius:9px;
+ font-weight:bold;
+ cursor:pointer;
 }
-button:disabled{background:#475569}
-footer{margin-top:35px;color:#64748b;font-size:12px}
+
+button:disabled{
+ background:#475569;
+ cursor:not-allowed;
+}
+
+input{
+ width:100%;
+ padding:13px;
+ border:1px solid #334155;
+ border-radius:10px;
+ background:#1e293b;
+ color:white;
+ font-size:14px;
+ outline:none;
+}
+
+input:focus{border-color:#3b82f6}
+
+.panel{
+ background:#1e293b;
+ border:1px solid #334155;
+ border-radius:15px;
+ padding:18px;
+ margin-top:22px;
+}
+
+.panel h2{
+ font-size:18px;
+ margin:0 0 15px;
+}
+
+.form-grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ gap:12px;
+}
+
+.form-group{
+ display:flex;
+ flex-direction:column;
+ gap:8px;
+}
+
+.form-group label{
+ font-size:13px;
+ color:#cbd5e1;
+}
+
+.actions{
+ display:flex;
+ gap:10px;
+ flex-wrap:wrap;
+ margin-top:14px;
+}
+
+.secondary{
+ background:#334155;
+}
+
+.danger{
+ background:#dc2626;
+}
+
+.message{
+ display:none;
+ padding:12px;
+ border-radius:9px;
+ margin-top:14px;
+ font-size:13px;
+ line-height:1.5;
+}
+
+.message.success{
+ display:block;
+ background:#064e3b;
+ color:#a7f3d0;
+}
+
+.message.error{
+ display:block;
+ background:#7f1d1d;
+ color:#fecaca;
+}
+
+.message.info{
+ display:block;
+ background:#1e3a8a;
+ color:#bfdbfe;
+}
+
+.account{
+ display:none;
+}
+
+.account.active{display:block}
+
+.account-info{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ flex-wrap:wrap;
+ gap:12px;
+}
+
+.access-status{
+ display:inline-block;
+ padding:7px 12px;
+ border-radius:20px;
+ background:#475569;
+ font-size:12px;
+ font-weight:bold;
+}
+
+.access-status.active{
+ background:#065f46;
+ color:#a7f3d0;
+}
+
+.access-status.inactive{
+ background:#7f1d1d;
+ color:#fecaca;
+}
+
+.search{
+ margin:24px 0;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:
+ repeat(auto-fit,minmax(260px,1fr));
+ gap:16px;
+}
+
+.card{
+ background:#1e293b;
+ border:1px solid #334155;
+ border-radius:16px;
+ padding:18px;
+}
+
+.icon{
+ width:55px;
+ height:55px;
+ border-radius:13px;
+ background:#334155;
+ display:grid;
+ place-items:center;
+ font-size:27px;
+ margin-bottom:14px;
+}
+
+.name{
+ font-size:19px;
+ font-weight:bold;
+}
+
+.desc{
+ color:#94a3b8;
+ font-size:13px;
+ min-height:35px;
+}
+
+.card button{margin-top:8px}
+
+footer{
+ margin-top:35px;
+ color:#64748b;
+ font-size:12px;
+}
+
+.hidden{display:none!important}
+
+@media(max-width:600px){
+ body{padding:16px}
+ header{align-items:flex-start}
+}
 </style>
 </head>
+
 <body>
+
 <header>
- <div class="logo">▶</div>
- <div>
-  <h1>TV APP STORE</h1>
-  <div class="sub">Aplikasi Android TV dan Android</div>
+ <div class="brand">
+  <div class="logo">▶</div>
+  <div>
+   <h1>TV APP STORE</h1>
+   <div class="sub">
+    Aplikasi Android TV dan Android
+   </div>
+  </div>
  </div>
 </header>
 
-<input id="search" class="search"
- placeholder="Cari aplikasi..." oninput="render()">
+<!-- ================================= -->
+<!-- LOGIN PELANGGAN -->
+<!-- ================================= -->
 
-<div id="status" class="sub">Memuat katalog...</div>
+<section id="loginPanel" class="panel">
+ <h2>Login Pelanggan</h2>
+
+ <div class="sub" style="margin-bottom:15px">
+  Login untuk mengakses aplikasi TV APP STORE.
+ </div>
+
+ <form id="loginForm">
+  <div class="form-grid">
+
+   <div class="form-group">
+    <label>Email</label>
+    <input
+     id="email"
+     type="email"
+     placeholder="Masukkan email"
+     autocomplete="username"
+     required
+    >
+   </div>
+
+   <div class="form-group">
+    <label>Password</label>
+    <input
+     id="password"
+     type="password"
+     placeholder="Masukkan password"
+     autocomplete="current-password"
+     required
+    >
+   </div>
+
+  </div>
+
+  <div class="actions">
+   <button id="loginButton" type="submit">
+    LOGIN
+   </button>
+  </div>
+ </form>
+
+ <div id="loginMessage" class="message"></div>
+</section>
+
+<!-- ================================= -->
+<!-- DASHBOARD PELANGGAN -->
+<!-- ================================= -->
+
+<section id="accountPanel" class="panel account">
+
+ <div class="account-info">
+  <div>
+   <h2 style="margin-bottom:6px">
+    Dashboard Pelanggan
+   </h2>
+   <div id="customerEmail" class="sub"></div>
+  </div>
+
+  <button
+   class="danger"
+   onclick="logoutCustomer()"
+  >
+   LOGOUT
+  </button>
+ </div>
+
+ <hr style="border:0;border-top:1px solid #334155;margin:18px 0">
+
+ <div class="form-group">
+  <label>Status akses</label>
+  <div>
+   <span id="accessBadge" class="access-status inactive">
+    MEMERIKSA...
+   </span>
+  </div>
+  <div id="accessInfo" class="sub">
+   Memeriksa status akun...
+  </div>
+ </div>
+
+ <!-- FORM AKTIVASI -->
+
+ <div id="redeemPanel" style="margin-top:22px">
+
+  <h2>Aktivasi Kode Akses</h2>
+
+  <div class="sub" style="margin-bottom:14px">
+   Masukkan kode akses yang diberikan oleh Admin.
+  </div>
+
+  <form id="redeemForm">
+   <div class="form-group">
+    <label>Kode Aktivasi</label>
+    <input
+     id="accessCode"
+     type="text"
+     placeholder="TV-XXXXXXXX-XXXXXXXX"
+     autocomplete="off"
+     required
+    >
+   </div>
+
+   <div class="actions">
+    <button id="redeemButton" type="submit">
+     AKTIVASI SEKARANG
+    </button>
+   </div>
+  </form>
+
+  <div id="redeemMessage" class="message"></div>
+
+ </div>
+
+</section>
+
+<!-- ================================= -->
+<!-- KATALOG APLIKASI -->
+<!-- ================================= -->
+
+<div style="margin-top:28px">
+ <h2 style="font-size:19px">Katalog Aplikasi</h2>
+ <div class="sub">
+  Pilih aplikasi Android TV yang tersedia.
+ </div>
+</div>
+
+<input
+ id="search"
+ class="search"
+ placeholder="Cari aplikasi..."
+ oninput="render()"
+>
+
+<div id="status" class="sub">
+ Memuat katalog...
+</div>
+
 <div id="apps" class="grid"></div>
 
-<footer>TV APP STORE · Official App Catalog</footer>
+<footer>
+ TV APP STORE · Official App Catalog
+</footer>
+
+<!-- SUPABASE CLIENT -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-let catalog=[];
+
+// =============================================
+// 1. SUPABASE CONFIGURATION
+// =============================================
+
+const SUPABASE_URL =
+ "https://welkgmpeojswwczybaxz.supabase.co";
+
+const SUPABASE_KEY =
+ "sb_publishable__uAx9Ak0SZ41-6UCC3LMxA_CZ6_kB0t";
+
+const db = window.supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_KEY
+);
+
+// =============================================
+// 2. GLOBAL DATA
+// =============================================
+
+let catalog = [];
+let currentUser = null;
+let accessActive = false;
+
+// =============================================
+// 3. MESSAGE HELPER
+// =============================================
+
+function showMessage(id,message,type="info"){
+ const el=document.getElementById(id);
+
+ el.textContent=message;
+ el.className="message "+type;
+}
+
+function hideMessage(id){
+ const el=document.getElementById(id);
+ el.textContent="";
+ el.className="message";
+}
+
+// =============================================
+// 4. API EDGE FUNCTION
+// =============================================
+
+async function callAPI(action,extra={}){
+
+ const {
+  data:{session},
+  error:sessionError
+ }=await db.auth.getSession();
+
+ if(sessionError)throw sessionError;
+
+ if(!session){
+  throw new Error("Silakan login terlebih dahulu.");
+ }
+
+ const {data,error}=await db.functions.invoke(
+  "tv-store-api",
+  {
+   body:{
+    action,
+    ...extra
+   }
+  }
+ );
+
+ if(error)throw error;
+
+ if(!data || !data.success){
+  throw new Error(
+   data?.error || "Permintaan gagal."
+  );
+ }
+
+ return data;
+}
+
+// =============================================
+// 5. LOGIN CUSTOMER
+// =============================================
+
+document.getElementById("loginForm")
+.addEventListener("submit",async function(e){
+
+ e.preventDefault();
+
+ const email=
+  document.getElementById("email").value.trim();
+
+ const password=
+  document.getElementById("password").value;
+
+ const btn=document.getElementById("loginButton");
+
+ btn.disabled=true;
+ btn.textContent="MEMPROSES...";
+
+ hideMessage("loginMessage");
+
+ try{
+
+  const {data,error}=await db.auth.signInWithPassword({
+   email,
+   password
+  });
+
+  if(error)throw error;
+
+  currentUser=data.user;
+
+  await updateCustomerUI();
+
+ }catch(error){
+
+  showMessage(
+   "loginMessage",
+   error.message || "Login gagal.",
+   "error"
+  );
+
+ }finally{
+
+  btn.disabled=false;
+  btn.textContent="LOGIN";
+
+ }
+
+});
+
+// =============================================
+// 6. UPDATE CUSTOMER UI
+// =============================================
+
+async function updateCustomerUI(){
+
+ const {
+  data:{user},
+  error
+ }=await db.auth.getUser();
+
+ if(error)throw error;
+
+ currentUser=user;
+
+ if(!user){
+  showLogin();
+  return;
+ }
+
+ document.getElementById("loginPanel")
+  .classList.add("hidden");
+
+ document.getElementById("accountPanel")
+  .classList.add("active");
+
+ document.getElementById("customerEmail")
+  .textContent=user.email || "";
+
+ await checkCustomerAccess();
+
+}
+
+// =============================================
+// 7. SHOW LOGIN
+// =============================================
+
+function showLogin(){
+
+ currentUser=null;
+ accessActive=false;
+
+ document.getElementById("loginPanel")
+  .classList.remove("hidden");
+
+ document.getElementById("accountPanel")
+  .classList.remove("active");
+
+ render();
+
+}
+
+// =============================================
+// 8. CHECK CUSTOMER ACCESS
+// =============================================
+
+async function checkCustomerAccess(){
+
+ const badge=document.getElementById("accessBadge");
+ const info=document.getElementById("accessInfo");
+ const redeem=document.getElementById("redeemPanel");
+
+ badge.className="access-status";
+ badge.textContent="MEMERIKSA...";
+
+ info.textContent="Memeriksa status akun...";
+
+ try{
+
+  const result=await callAPI("customer_access");
+
+  accessActive=Boolean(result.active);
+
+  if(accessActive){
+
+   badge.className="access-status active";
+   badge.textContent="AKSES AKTIF";
+
+   const expiry=result.access?.expires_at;
+
+   info.textContent=expiry
+    ? "Masa aktif sampai: "+
+      new Date(expiry).toLocaleString("id-ID")
+    : "Akun Anda aktif.";
+
+   redeem.classList.add("hidden");
+
+  }else{
+
+   badge.className="access-status inactive";
+   badge.textContent="BELUM AKTIF";
+
+   info.textContent=
+    "Masukkan kode akses untuk mengaktifkan akun.";
+
+   redeem.classList.remove("hidden");
+
+  }
+
+ }catch(error){
+
+  accessActive=false;
+
+  badge.className="access-status inactive";
+  badge.textContent="GAGAL MEMERIKSA";
+
+  info.textContent=error.message;
+
+  redeem.classList.remove("hidden");
+
+ }
+
+ render();
+
+}
+
+// =============================================
+// 9. REDEEM ACCESS CODE
+// =============================================
+
+document.getElementById("redeemForm")
+.addEventListener("submit",async function(e){
+
+ e.preventDefault();
+
+ const code=
+  document.getElementById("accessCode")
+  .value.trim().toUpperCase();
+
+ if(!code)return;
+
+ const btn=document.getElementById("redeemButton");
+
+ btn.disabled=true;
+ btn.textContent="MENGAKTIFKAN...";
+
+ hideMessage("redeemMessage");
+
+ try{
+
+  await callAPI("customer_redeem",{
+   code:code
+  });
+
+  showMessage(
+   "redeemMessage",
+   "Aktivasi berhasil! Memperbarui status akun...",
+   "success"
+  );
+
+  document.getElementById("accessCode").value="";
+
+  await checkCustomerAccess();
+
+ }catch(error){
+
+  showMessage(
+   "redeemMessage",
+   error.message || "Kode gagal diaktifkan.",
+   "error"
+  );
+
+ }finally{
+
+  btn.disabled=false;
+  btn.textContent="AKTIVASI SEKARANG";
+
+ }
+
+});
+
+// =============================================
+// 10. LOGOUT
+// =============================================
+
+async function logoutCustomer(){
+
+ const {error}=await db.auth.signOut();
+
+ if(error){
+  alert("Logout gagal: "+error.message);
+  return;
+ }
+
+ accessActive=false;
+ showLogin();
+
+}
+
+// =============================================
+// 11. LOAD CATALOG
+// =============================================
 
 async function loadCatalog(){
+
  try{
-  const response=await fetch('catalog/apps.json?t='+Date.now());
-  if(!response.ok)throw Error('Katalog tidak ditemukan');
+
+  const response=await fetch(
+   "catalog/apps.json?t="+Date.now()
+  );
+
+  if(!response.ok){
+   throw Error("Katalog tidak ditemukan");
+  }
+
   const data=await response.json();
+
   catalog=data.apps||[];
-  document.getElementById('status').textContent=
-   catalog.length+' aplikasi tersedia';
+
+  document.getElementById("status")
+   .textContent=catalog.length+
+   " aplikasi tersedia";
+
   render();
- }catch(e){
-  document.getElementById('status').textContent=
-   'Gagal memuat katalog: '+e.message;
+
+ }catch(error){
+
+  document.getElementById("status")
+   .textContent="Gagal memuat katalog: "+
+   error.message;
+
  }
+
 }
+
+// =============================================
+// 12. RENDER APPLICATIONS
+// =============================================
 
 function render(){
- const q=document.getElementById('search').value.toLowerCase();
- const area=document.getElementById('apps');
- area.innerHTML='';
- catalog.filter(a=>a.enabled&&
-  (a.name+' '+a.description).toLowerCase().includes(q)
- ).forEach(a=>{
-  const card=document.createElement('div');
-  card.className='card';
-  const icon=document.createElement('div');
-  icon.className='icon';
-  icon.textContent='📺';
-  const name=document.createElement('div');
-  name.className='name';
+
+ const q=document.getElementById("search")
+  .value.toLowerCase();
+
+ const area=document.getElementById("apps");
+
+ area.innerHTML="";
+
+ const filtered=catalog.filter(a=>
+  a.enabled&&
+  (a.name+" "+a.description)
+  .toLowerCase().includes(q)
+ );
+
+ filtered.forEach(a=>{
+
+  const card=document.createElement("div");
+  card.className="card";
+
+  const icon=document.createElement("div");
+  icon.className="icon";
+  icon.textContent="📺";
+
+  const name=document.createElement("div");
+  name.className="name";
   name.textContent=a.name;
-  const desc=document.createElement('p');
-  desc.className='desc';
-  desc.textContent=a.description+' · Versi '+a.version;
-  const btn=document.createElement('button');
-  btn.textContent=a.apkUrl?'DOWNLOAD':'BELUM TERSEDIA';
-  btn.disabled=!a.apkUrl;
-  btn.onclick=()=>window.open(a.apkUrl,'_blank','noopener');
+
+  const desc=document.createElement("p");
+  desc.className="desc";
+  desc.textContent=
+   a.description+" · Versi "+a.version;
+
+  const btn=document.createElement("button");
+
+  if(!a.apkUrl){
+
+   btn.textContent="BELUM TERSEDIA";
+   btn.disabled=true;
+
+  }else if(!currentUser){
+
+   btn.textContent="LOGIN UNTUK DOWNLOAD";
+   btn.disabled=false;
+
+   btn.onclick=()=>{
+    document.getElementById("loginPanel")
+     .scrollIntoView({behavior:"smooth"});
+   };
+
+  }else if(!accessActive){
+
+   btn.textContent="AKTIVASI UNTUK DOWNLOAD";
+   btn.disabled=false;
+
+   btn.onclick=()=>{
+    document.getElementById("redeemPanel")
+     .scrollIntoView({behavior:"smooth"});
+   };
+
+  }else{
+
+   btn.textContent="DOWNLOAD";
+   btn.disabled=false;
+
+   btn.onclick=()=>{
+    window.open(
+     a.apkUrl,
+     "_blank",
+     "noopener"
+    );
+   };
+
+  }
+
   card.append(icon,name,desc,btn);
   area.append(card);
+
  });
+
 }
 
+// =============================================
+// 13. CHECK EXISTING SESSION
+// =============================================
+
+async function initialize(){
+
+ try{
+
+  const {
+   data:{session}
+  }=await db.auth.getSession();
+
+  if(session){
+   await updateCustomerUI();
+  }else{
+   showLogin();
+  }
+
+ }catch(error){
+
+  console.error("Initialization error:",error);
+
+ }
+
+}
+
+// =============================================
+// 14. AUTH STATE LISTENER
+// =============================================
+
+db.auth.onAuthStateChange((event,session)=>{
+
+ if(event==="SIGNED_OUT"){
+  showLogin();
+ }
+
+});
+
+// =============================================
+// 15. START APPLICATION
+// =============================================
+
 loadCatalog();
+initialize();
+
 </script>
+
 </body>
 </html>
