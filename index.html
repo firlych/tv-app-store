@@ -4,10 +4,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
+
 <title>TV APP STORE</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+ box-sizing:border-box;
+}
 
 body{
  margin:0;
@@ -33,13 +37,28 @@ header{
 
 .logo{
  background:#2563eb;
- padding:13px;
+ width:55px;
+ height:55px;
+ display:grid;
+ place-items:center;
  border-radius:13px;
- font-size:23px;
+ font-size:25px;
 }
 
-h1{font-size:23px;margin:0 0 6px}
-.sub{color:#94a3b8;font-size:13px}
+h1{
+ font-size:23px;
+ margin:0 0 6px;
+}
+
+h2{
+ font-size:19px;
+ margin:0 0 14px;
+}
+
+.sub{
+ color:#94a3b8;
+ font-size:13px;
+}
 
 button{
  border:0;
@@ -49,6 +68,10 @@ button{
  border-radius:9px;
  font-weight:bold;
  cursor:pointer;
+}
+
+button:hover{
+ background:#1d4ed8;
 }
 
 button:disabled{
@@ -67,7 +90,9 @@ input{
  outline:none;
 }
 
-input:focus{border-color:#3b82f6}
+input:focus{
+ border-color:#3b82f6;
+}
 
 .panel{
  background:#1e293b;
@@ -77,14 +102,12 @@ input:focus{border-color:#3b82f6}
  margin-top:22px;
 }
 
-.panel h2{
- font-size:18px;
- margin:0 0 15px;
-}
-
 .form-grid{
  display:grid;
- grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ grid-template-columns:repeat(
+  auto-fit,
+  minmax(220px,1fr)
+ );
  gap:12px;
 }
 
@@ -114,6 +137,10 @@ input:focus{border-color:#3b82f6}
  background:#dc2626;
 }
 
+.danger:hover{
+ background:#b91c1c;
+}
+
 .message{
  display:none;
  padding:12px;
@@ -121,6 +148,7 @@ input:focus{border-color:#3b82f6}
  margin-top:14px;
  font-size:13px;
  line-height:1.5;
+ overflow-wrap:anywhere;
 }
 
 .message.success{
@@ -145,7 +173,9 @@ input:focus{border-color:#3b82f6}
  display:none;
 }
 
-.account.active{display:block}
+.account.active{
+ display:block;
+}
 
 .account-info{
  display:flex;
@@ -190,6 +220,9 @@ input:focus{border-color:#3b82f6}
  border:1px solid #334155;
  border-radius:16px;
  padding:18px;
+ display:flex;
+ flex-direction:column;
+ align-items:flex-start;
 }
 
 .icon{
@@ -212,9 +245,24 @@ input:focus{border-color:#3b82f6}
  color:#94a3b8;
  font-size:13px;
  min-height:35px;
+ line-height:1.5;
 }
 
-.card button{margin-top:8px}
+.card button{
+ margin-top:auto;
+}
+
+.card button.download{
+ background:#16a34a;
+}
+
+.card button.download:hover{
+ background:#15803d;
+}
+
+.hidden{
+ display:none!important;
+}
 
 footer{
  margin-top:35px;
@@ -222,16 +270,31 @@ footer{
  font-size:12px;
 }
 
-.hidden{display:none!important}
+.loading{
+ opacity:.7;
+}
 
 @media(max-width:600px){
- body{padding:16px}
- header{align-items:flex-start}
+ body{
+  padding:16px;
+ }
+
+ header{
+  align-items:flex-start;
+ }
+
+ .grid{
+  grid-template-columns:1fr;
+ }
 }
 </style>
 </head>
 
 <body>
+
+<!-- =====================================
+     HEADER
+===================================== -->
 
 <header>
  <div class="brand">
@@ -245,11 +308,13 @@ footer{
  </div>
 </header>
 
-<!-- ================================= -->
-<!-- LOGIN PELANGGAN -->
-<!-- ================================= -->
+
+<!-- =====================================
+     LOGIN PELANGGAN
+===================================== -->
 
 <section id="loginPanel" class="panel">
+
  <h2>Login Pelanggan</h2>
 
  <div class="sub" style="margin-bottom:15px">
@@ -257,6 +322,7 @@ footer{
  </div>
 
  <form id="loginForm">
+
   <div class="form-grid">
 
    <div class="form-group">
@@ -288,46 +354,65 @@ footer{
     LOGIN
    </button>
   </div>
+
  </form>
 
  <div id="loginMessage" class="message"></div>
+
 </section>
 
-<!-- ================================= -->
-<!-- DASHBOARD PELANGGAN -->
-<!-- ================================= -->
+
+<!-- =====================================
+     DASHBOARD PELANGGAN
+===================================== -->
 
 <section id="accountPanel" class="panel account">
 
  <div class="account-info">
+
   <div>
    <h2 style="margin-bottom:6px">
     Dashboard Pelanggan
    </h2>
+
    <div id="customerEmail" class="sub"></div>
   </div>
 
   <button
    class="danger"
-   onclick="logoutCustomer()"
+   id="logoutButton"
+   type="button"
   >
    LOGOUT
   </button>
+
  </div>
 
- <hr style="border:0;border-top:1px solid #334155;margin:18px 0">
+ <hr style="
+  border:0;
+  border-top:1px solid #334155;
+  margin:18px 0;
+ ">
 
  <div class="form-group">
+
   <label>Status akses</label>
+
   <div>
-   <span id="accessBadge" class="access-status inactive">
+   <span
+    id="accessBadge"
+    class="access-status inactive"
+   >
     MEMERIKSA...
    </span>
   </div>
+
   <div id="accessInfo" class="sub">
    Memeriksa status akun...
   </div>
+
  </div>
+
 
  <!-- FORM AKTIVASI -->
 
@@ -340,8 +425,11 @@ footer{
   </div>
 
   <form id="redeemForm">
+
    <div class="form-group">
+
     <label>Kode Aktivasi</label>
+
     <input
      id="accessCode"
      type="text"
@@ -349,13 +437,20 @@ footer{
      autocomplete="off"
      required
     >
+
    </div>
 
    <div class="actions">
-    <button id="redeemButton" type="submit">
+
+    <button
+     id="redeemButton"
+     type="submit"
+    >
      AKTIVASI SEKARANG
     </button>
+
    </div>
+
   </form>
 
   <div id="redeemMessage" class="message"></div>
@@ -364,22 +459,25 @@ footer{
 
 </section>
 
-<!-- ================================= -->
-<!-- KATALOG APLIKASI -->
-<!-- ================================= -->
 
-<div style="margin-top:28px">
- <h2 style="font-size:19px">Katalog Aplikasi</h2>
+<!-- =====================================
+     KATALOG APLIKASI
+===================================== -->
+
+<section style="margin-top:28px">
+
+ <h2>Katalog Aplikasi</h2>
+
  <div class="sub">
   Pilih aplikasi Android TV yang tersedia.
  </div>
-</div>
+
+</section>
 
 <input
  id="search"
  class="search"
  placeholder="Cari aplikasi..."
- oninput="render()"
 >
 
 <div id="status" class="sub">
@@ -388,11 +486,16 @@ footer{
 
 <div id="apps" class="grid"></div>
 
+
 <footer>
  TV APP STORE · Official App Catalog
 </footer>
 
-<!-- SUPABASE CLIENT -->
+
+<!-- =====================================
+     SUPABASE CLIENT
+===================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -412,30 +515,48 @@ const db = window.supabase.createClient(
  SUPABASE_KEY
 );
 
+
 // =============================================
 // 2. GLOBAL DATA
 // =============================================
 
 let catalog = [];
+
 let currentUser = null;
+
 let accessActive = false;
+
+let accessChecking = false;
+
 
 // =============================================
 // 3. MESSAGE HELPER
 // =============================================
 
-function showMessage(id,message,type="info"){
+function showMessage(
+ id,
+ message,
+ type="info"
+){
+
  const el=document.getElementById(id);
 
  el.textContent=message;
+
  el.className="message "+type;
+
 }
 
 function hideMessage(id){
+
  const el=document.getElementById(id);
+
  el.textContent="";
+
  el.className="message";
+
 }
+
 
 // =============================================
 // 4. API EDGE FUNCTION
@@ -448,10 +569,14 @@ async function callAPI(action,extra={}){
   error:sessionError
  }=await db.auth.getSession();
 
- if(sessionError)throw sessionError;
+ if(sessionError){
+  throw sessionError;
+ }
 
  if(!session){
-  throw new Error("Silakan login terlebih dahulu.");
+  throw new Error(
+   "Silakan login terlebih dahulu."
+  );
  }
 
  const {data,error}=await db.functions.invoke(
@@ -464,16 +589,38 @@ async function callAPI(action,extra={}){
   }
  );
 
- if(error)throw error;
+ if(error){
+
+  let message=error.message;
+
+  try{
+
+   if(error.context){
+
+    const response=await error.context.json();
+
+    message=response.error||message;
+
+   }
+
+  }catch(_){}
+
+  throw new Error(message);
+
+ }
 
  if(!data || !data.success){
+
   throw new Error(
    data?.error || "Permintaan gagal."
   );
+
  }
 
  return data;
+
 }
+
 
 // =============================================
 // 5. LOGIN CUSTOMER
@@ -485,14 +632,17 @@ document.getElementById("loginForm")
  e.preventDefault();
 
  const email=
-  document.getElementById("email").value.trim();
+  document.getElementById("email")
+  .value.trim();
 
  const password=
-  document.getElementById("password").value;
+  document.getElementById("password")
+  .value;
 
  const btn=document.getElementById("loginButton");
 
  btn.disabled=true;
+
  btn.textContent="MEMPROSES...";
 
  hideMessage("loginMessage");
@@ -504,28 +654,38 @@ document.getElementById("loginForm")
    password
   });
 
-  if(error)throw error;
+  if(error){
+   throw error;
+  }
 
   currentUser=data.user;
 
   await updateCustomerUI();
 
+  showMessage(
+   "loginMessage",
+   "Login berhasil.",
+   "success"
+  );
+
  }catch(error){
 
   showMessage(
    "loginMessage",
-   error.message || "Login gagal.",
+   error.message||"Login gagal.",
    "error"
   );
 
  }finally{
 
   btn.disabled=false;
+
   btn.textContent="LOGIN";
 
  }
 
 });
+
 
 // =============================================
 // 6. UPDATE CUSTOMER UI
@@ -538,13 +698,18 @@ async function updateCustomerUI(){
   error
  }=await db.auth.getUser();
 
- if(error)throw error;
+ if(error){
+  throw error;
+ }
 
  currentUser=user;
 
  if(!user){
+
   showLogin();
+
   return;
+
  }
 
  document.getElementById("loginPanel")
@@ -554,11 +719,12 @@ async function updateCustomerUI(){
   .classList.add("active");
 
  document.getElementById("customerEmail")
-  .textContent=user.email || "";
+  .textContent=user.email||"";
 
  await checkCustomerAccess();
 
 }
+
 
 // =============================================
 // 7. SHOW LOGIN
@@ -567,6 +733,7 @@ async function updateCustomerUI(){
 function showLogin(){
 
  currentUser=null;
+
  accessActive=false;
 
  document.getElementById("loginPanel")
@@ -579,20 +746,33 @@ function showLogin(){
 
 }
 
+
 // =============================================
 // 8. CHECK CUSTOMER ACCESS
 // =============================================
 
 async function checkCustomerAccess(){
 
- const badge=document.getElementById("accessBadge");
- const info=document.getElementById("accessInfo");
- const redeem=document.getElementById("redeemPanel");
+ const badge=
+  document.getElementById("accessBadge");
+
+ const info=
+  document.getElementById("accessInfo");
+
+ const redeem=
+  document.getElementById("redeemPanel");
+
+ accessChecking=true;
+
+ accessActive=false;
 
  badge.className="access-status";
+
  badge.textContent="MEMERIKSA...";
 
  info.textContent="Memeriksa status akun...";
+
+ render();
 
  try{
 
@@ -603,13 +783,21 @@ async function checkCustomerAccess(){
   if(accessActive){
 
    badge.className="access-status active";
+
    badge.textContent="AKSES AKTIF";
 
    const expiry=result.access?.expires_at;
 
+   const remaining=result.remaining_days;
+
    info.textContent=expiry
     ? "Masa aktif sampai: "+
-      new Date(expiry).toLocaleString("id-ID")
+      new Date(expiry).toLocaleString("id-ID")+
+      (
+       Number.isFinite(remaining)
+       ? " · Sisa "+remaining+" hari"
+       : ""
+      )
     : "Akun Anda aktif.";
 
    redeem.classList.add("hidden");
@@ -617,6 +805,7 @@ async function checkCustomerAccess(){
   }else{
 
    badge.className="access-status inactive";
+
    badge.textContent="BELUM AKTIF";
 
    info.textContent=
@@ -631,17 +820,23 @@ async function checkCustomerAccess(){
   accessActive=false;
 
   badge.className="access-status inactive";
+
   badge.textContent="GAGAL MEMERIKSA";
 
   info.textContent=error.message;
 
   redeem.classList.remove("hidden");
 
+ }finally{
+
+  accessChecking=false;
+
+  render();
+
  }
 
- render();
-
 }
+
 
 // =============================================
 // 9. REDEEM ACCESS CODE
@@ -656,11 +851,14 @@ document.getElementById("redeemForm")
   document.getElementById("accessCode")
   .value.trim().toUpperCase();
 
- if(!code)return;
+ if(!code){
+  return;
+ }
 
  const btn=document.getElementById("redeemButton");
 
  btn.disabled=true;
+
  btn.textContent="MENGAKTIFKAN...";
 
  hideMessage("redeemMessage");
@@ -673,7 +871,7 @@ document.getElementById("redeemForm")
 
   showMessage(
    "redeemMessage",
-   "Aktivasi berhasil! Memperbarui status akun...",
+   "Aktivasi berhasil. Memperbarui status akun...",
    "success"
   );
 
@@ -685,36 +883,46 @@ document.getElementById("redeemForm")
 
   showMessage(
    "redeemMessage",
-   error.message || "Kode gagal diaktifkan.",
+   error.message||"Kode gagal diaktifkan.",
    "error"
   );
 
  }finally{
 
   btn.disabled=false;
+
   btn.textContent="AKTIVASI SEKARANG";
 
  }
 
 });
 
+
 // =============================================
 // 10. LOGOUT
 // =============================================
+
+document.getElementById("logoutButton")
+.addEventListener("click",logoutCustomer);
 
 async function logoutCustomer(){
 
  const {error}=await db.auth.signOut();
 
  if(error){
+
   alert("Logout gagal: "+error.message);
+
   return;
+
  }
 
  accessActive=false;
+
  showLogin();
 
 }
+
 
 // =============================================
 // 11. LOAD CATALOG
@@ -725,16 +933,25 @@ async function loadCatalog(){
  try{
 
   const response=await fetch(
-   "catalog/apps.json?t="+Date.now()
+   "catalog/apps.json?t="+Date.now(),
+   {
+    cache:"no-store"
+   }
   );
 
   if(!response.ok){
-   throw Error("Katalog tidak ditemukan");
+
+   throw new Error(
+    "Katalog tidak ditemukan"
+   );
+
   }
 
   const data=await response.json();
 
-  catalog=data.apps||[];
+  catalog=Array.isArray(data.apps)
+   ? data.apps
+   : [];
 
   document.getElementById("status")
    .textContent=catalog.length+
@@ -745,101 +962,272 @@ async function loadCatalog(){
  }catch(error){
 
   document.getElementById("status")
-   .textContent="Gagal memuat katalog: "+
-   error.message;
+   .textContent=
+   "Gagal memuat katalog: "+error.message;
 
  }
 
 }
 
+
 // =============================================
-// 12. RENDER APPLICATIONS
+// 12. GET APPLICATION ID
+// =============================================
+
+function getAppId(app){
+
+ if(
+  app.app_id &&
+  [
+   "bittv",
+   "iontv",
+   "depoaminetv"
+  ].includes(app.app_id)
+ ){
+  return app.app_id;
+ }
+
+ const name=(app.name||"").toLowerCase();
+
+ if(name.includes("bittv")){
+  return "bittv";
+ }
+
+ if(name.includes("iontv")){
+  return "iontv";
+ }
+
+ if(name.includes("depoamine")){
+  return "depoaminetv";
+ }
+
+ return null;
+
+}
+
+
+// =============================================
+// 13. DOWNLOAD APPLICATION
+// =============================================
+
+async function downloadApp(appId,button){
+
+ if(!currentUser){
+
+  document.getElementById("loginPanel")
+   .scrollIntoView({behavior:"smooth"});
+
+  return;
+
+ }
+
+ if(!accessActive){
+
+  document.getElementById("redeemPanel")
+   .scrollIntoView({behavior:"smooth"});
+
+  return;
+
+ }
+
+ if(accessChecking){
+
+  alert("Sedang memeriksa akses pelanggan.");
+
+  return;
+
+ }
+
+ const originalText=button.textContent;
+
+ button.disabled=true;
+
+ button.textContent="MEMERIKSA AKSES...";
+
+ try{
+
+  // Periksa ulang akses di server.
+  // Server tetap menjadi penentu izin download.
+
+  const result=await callAPI(
+   "customer_download",
+   {
+    app_id:appId
+   }
+  );
+
+  if(!result.download_url){
+
+   throw new Error(
+    "Link download tidak diterima dari server."
+   );
+
+  }
+
+  button.textContent="MEMULAI DOWNLOAD...";
+
+  // Arahkan browser ke Signed URL.
+  // URL berlaku selama 5 menit.
+
+  window.location.assign(
+   result.download_url
+  );
+
+ }catch(error){
+
+  alert(
+   "Download gagal:\n"+
+   (error.message||"Terjadi kesalahan.")
+  );
+
+  button.disabled=false;
+
+  button.textContent=originalText;
+
+ }
+
+}
+
+
+// =============================================
+// 14. RENDER APPLICATIONS
 // =============================================
 
 function render(){
 
- const q=document.getElementById("search")
-  .value.toLowerCase();
+ const search=
+  document.getElementById("search");
 
- const area=document.getElementById("apps");
+ const q=search.value.toLowerCase();
+
+ const area=
+  document.getElementById("apps");
 
  area.innerHTML="";
 
- const filtered=catalog.filter(a=>
-  a.enabled&&
-  (a.name+" "+a.description)
-  .toLowerCase().includes(q)
- );
+ const filtered=catalog.filter(a=>{
+
+  const name=(a.name||"").toLowerCase();
+
+  const description=
+   (a.description||"").toLowerCase();
+
+  return a.enabled!==false &&
+   (name+" "+description).includes(q);
+
+ });
 
  filtered.forEach(a=>{
 
   const card=document.createElement("div");
+
   card.className="card";
 
   const icon=document.createElement("div");
+
   icon.className="icon";
+
   icon.textContent="📺";
 
   const name=document.createElement("div");
+
   name.className="name";
-  name.textContent=a.name;
+
+  name.textContent=a.name||"Aplikasi";
 
   const desc=document.createElement("p");
+
   desc.className="desc";
+
   desc.textContent=
-   a.description+" · Versi "+a.version;
+   (a.description||"Aplikasi Android TV")+
+   " · Versi "+
+   (a.version||"Tersedia");
 
   const btn=document.createElement("button");
 
-  if(!a.apkUrl){
+  const appId=getAppId(a);
 
-   btn.textContent="BELUM TERSEDIA";
+  if(!appId){
+
+   btn.textContent="APLIKASI TIDAK DIKENALI";
+
+   btn.disabled=true;
+
+  }else if(accessChecking){
+
+   btn.textContent="MEMERIKSA AKSES";
+
    btn.disabled=true;
 
   }else if(!currentUser){
 
    btn.textContent="LOGIN UNTUK DOWNLOAD";
-   btn.disabled=false;
 
    btn.onclick=()=>{
+
     document.getElementById("loginPanel")
      .scrollIntoView({behavior:"smooth"});
+
    };
 
   }else if(!accessActive){
 
    btn.textContent="AKTIVASI UNTUK DOWNLOAD";
-   btn.disabled=false;
 
    btn.onclick=()=>{
+
     document.getElementById("redeemPanel")
      .scrollIntoView({behavior:"smooth"});
+
    };
 
   }else{
 
-   btn.textContent="DOWNLOAD";
-   btn.disabled=false;
+   btn.textContent="DOWNLOAD APK";
 
-   btn.onclick=()=>{
-    window.open(
-     a.apkUrl,
-     "_blank",
-     "noopener"
-    );
-   };
+   btn.className="download";
+
+   btn.onclick=()=>downloadApp(appId,btn);
 
   }
 
-  card.append(icon,name,desc,btn);
+  card.append(
+   icon,
+   name,
+   desc,
+   btn
+  );
+
   area.append(card);
 
  });
 
+ if(filtered.length===0){
+
+  const empty=document.createElement("div");
+
+  empty.className="sub";
+
+  empty.textContent="Aplikasi tidak ditemukan.";
+
+  area.append(empty);
+
+ }
+
 }
 
+
 // =============================================
-// 13. CHECK EXISTING SESSION
+// 15. SEARCH
+// =============================================
+
+document.getElementById("search")
+.addEventListener("input",render);
+
+
+// =============================================
+// 16. CHECK EXISTING SESSION
 // =============================================
 
 async function initialize(){
@@ -847,40 +1235,61 @@ async function initialize(){
  try{
 
   const {
-   data:{session}
+   data:{session},
+   error
   }=await db.auth.getSession();
 
+  if(error){
+   throw error;
+  }
+
   if(session){
+
    await updateCustomerUI();
+
   }else{
+
    showLogin();
+
   }
 
  }catch(error){
 
-  console.error("Initialization error:",error);
+  console.error(
+   "Initialization error:",
+   error
+  );
+
+  showLogin();
 
  }
 
 }
 
+
 // =============================================
-// 14. AUTH STATE LISTENER
+// 17. AUTH STATE LISTENER
 // =============================================
 
-db.auth.onAuthStateChange((event,session)=>{
+db.auth.onAuthStateChange(
+ (event,session)=>{
 
- if(event==="SIGNED_OUT"){
-  showLogin();
+  if(event==="SIGNED_OUT"){
+
+   showLogin();
+
+  }
+
  }
+);
 
-});
 
 // =============================================
-// 15. START APPLICATION
+// 18. START APPLICATION
 // =============================================
 
 loadCatalog();
+
 initialize();
 
 </script>
