@@ -1,0 +1,43 @@
+
+{
+  "storeName": "TV APP STORE",
+  "version": 1,
+  "apps": [
+    {
+      "id": "bittv",
+      "name": "BITTV",
+      "packageName": "",
+      "version": "1.0.0",
+      "versionCode": 1,
+      "description": "Aplikasi BITTV",
+      "icon": "",
+      "apkUrl": "",
+      "changelog": "Versi awal",
+      "enabled": true
+    },
+    {
+      "id": "iontv",
+      "name": "IONTV",
+      "packageName": "",
+      "version": "1.0.0",
+      "versionCode": 1,
+      "description": "Aplikasi IONTV",
+      "icon": "",
+      "apkUrl": "",
+      "changelog": "Versi awal",
+      "enabled": true
+    },
+    {
+      "id": "depoaminetv",
+      "name": "DEPOAMINETV",
+      "packageName": "",
+      "version": "1.0.0",
+      "versionCode": 1,
+      "description": "Aplikasi DEPOAMINETV",
+      "icon": "",
+      "apkUrl": "",
+      "changelog": "Versi awal",
+      "enabled": true
+    }
+  ]
+}
